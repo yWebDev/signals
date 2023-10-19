@@ -1,0 +1,33 @@
+.header,
+.content {
+  display: flex;
+}
+
+.header > div,
+.content > div {
+  width: 50%;
+  border: 2px solid;
+  height: 50px;
+}
+
+.content > div {
+  height: 100vh;
+  padding: 1rem;
+}
+
+.category-selector-wrapper,
+.category-title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-item {
+  border: 1px solid deepskyblue;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+
+  &.selected {
+    background-color: #d1e8ff;
+  }
+}

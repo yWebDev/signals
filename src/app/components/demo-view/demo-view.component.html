@@ -1,0 +1,20 @@
+<h1>Demo View</h1>
+<div class="header">
+  <div class="category-selector-wrapper">
+    <app-category-selector
+      (categoryChange)="onCategoryChange($event)"
+      (categoriesLoad)="categories = $event"></app-category-selector>
+  </div>
+  <div class="category-title-wrapper"><h2>{{ selectedCategory }}</h2></div>
+</div>
+<div class="content">
+  <div>
+    <div class="category-item"
+         [ngClass]="{ 'selected' : category === selectedCategory }"
+         *ngFor="let category of categories">
+      <h3>{{ category }}</h3>
+      <p>{{ category }}</p>
+    </div>
+  </div>
+  <div>{{ data.data }}</div>
+</div>
