@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { CategoryService } from '../../services/category.service';
 import { DemoService } from '../../services/demo.service';
 
 @Component({
@@ -14,7 +15,10 @@ export class CategorySelectorComponent implements OnInit {
   selectedIndex = 0;
   categories?: string[];
 
-  constructor(private demoService: DemoService) {
+  constructor(private demoService: DemoService, public categoryService: CategoryService) {
+    this.categoryService.category$
+      .asObservable()
+      .subscribe(category => this.selectedCategory = category!);
   }
 
   ngOnInit() {
@@ -22,20 +26,22 @@ export class CategorySelectorComponent implements OnInit {
       .then(res => {
         this.categories = res;
         this.categoriesLoad.emit(this.categories)
-        this.selectedCategory = this.categories![0];
-        this.categoryChange.emit(this.selectedCategory);
+        this.categoryService.category$.next(this.categories![0]);
       });
   }
 
   onPrev(): void {
     this.selectedIndex -= 1;
-    this.selectedCategory = this.categories![this.selectedIndex];
-    this.categoryChange.emit(this.selectedCategory);
+    this.categoryService.category$.next(this.categories![this.selectedIndex]);
   }
 
   onNext(): void {
     this.selectedIndex += 1;
-    this.selectedCategory = this.categories![this.selectedIndex];
-    this.categoryChange.emit(this.selectedCategory);
+    this.categoryService.category$.next(this.categories![this.selectedIndex]);
+  }
+
+  onCategoryChange(category: string): void {
+    this.selectedIndex = this.categories?.indexOf(category)!;
+    this.categoryService.category$.next(category);
   }
 }

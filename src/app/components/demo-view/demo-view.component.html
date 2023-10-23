@@ -2,7 +2,6 @@
 <div class="header">
   <div class="category-selector-wrapper">
     <app-category-selector
-      (categoryChange)="onCategoryChange($event)"
       (categoriesLoad)="categories = $event"></app-category-selector>
   </div>
   <div class="category-title-wrapper"><h2>{{ selectedCategory }}</h2></div>
