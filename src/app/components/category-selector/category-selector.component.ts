@@ -14,7 +14,7 @@ export class CategorySelectorComponent implements OnInit {
   selectedIndex = 0;
   categories?: string[];
 
-  constructor(private cdr: ChangeDetectorRef, private demoService: DemoService) {
+  constructor(private demoService: DemoService) {
   }
 
   ngOnInit() {
@@ -24,7 +24,7 @@ export class CategorySelectorComponent implements OnInit {
         this.categoriesLoad.emit(this.categories)
         this.selectedCategory = this.categories![0];
         this.categoryChange.emit(this.selectedCategory);
-      }).then(() => this.cdr.markForCheck());
+      });
   }
 
   onPrev(): void {

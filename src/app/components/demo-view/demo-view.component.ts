@@ -11,12 +11,17 @@ export class DemoViewComponent {
   selectedCategory?: string;
   categories?: string[];
   data: any;
+  isLoading = false;
 
   constructor(private cdr: ChangeDetectorRef, private demoService: DemoService) {
   }
 
   onCategoryChange(category: string): void {
     this.selectedCategory = category;
-    this.demoService.loadDataByCategory(this.selectedCategory).then(res => this.data = res).then(() => this.cdr.markForCheck());
+    this.isLoading = true;
+    this.demoService.loadDataByCategory(this.selectedCategory)
+      .then(res => this.data = res)
+      .then(() => this.isLoading = false)
+      .then(() => this.cdr.markForCheck());
   }
 }

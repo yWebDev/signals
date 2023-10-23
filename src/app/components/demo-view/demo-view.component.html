@@ -13,8 +13,8 @@
          [ngClass]="{ 'selected' : category === selectedCategory }"
          *ngFor="let category of categories">
       <h3>{{ category }}</h3>
-      <p>{{ category }}</p>
+      <p>Content for {{ category }}</p>
     </div>
   </div>
-  <div>{{ data.data }}</div>
+  <div>{{ !isLoading ? data.data : 'Loading...' }}</div>
 </div>
