@@ -11,7 +11,9 @@
   <div>
     <div class="category-item"
          [ngClass]="{ 'selected' : category === selectedCategory()! }"
-         *ngFor="let category of categories">
+         *ngFor="let category of categories"
+         (click)="selectedCategory.set(category)"
+    >
       <h3>{{ category }}</h3>
       <p>Content for {{ category }}</p>
     </div>
