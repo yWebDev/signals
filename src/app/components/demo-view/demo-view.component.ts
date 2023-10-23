@@ -1,5 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { switchMap, tap } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  computed,
+  Signal,
+  signal,
+} from '@angular/core';
 import { CategoryService } from '../../services/category.service';
 import { DemoService } from '../../services/demo.service';
 
@@ -10,25 +16,17 @@ import { DemoService } from '../../services/demo.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DemoViewComponent {
-  selectedCategory?: string;
+  selectedCategory = signal<string | null>(null);
   categories?: string[];
-  data: any;
+  data: Signal<Promise<any>>;
   isLoading = false;
 
-  constructor(private cdr: ChangeDetectorRef, private demoService: DemoService, private categoryService: CategoryService) {
-    this.categoryService.category$
-      .asObservable()
-      .pipe(
-        tap(() => this.isLoading = true),
-        switchMap((category: string | null) => {
-          this.selectedCategory = category!;
-          return this.demoService.loadDataByCategory(category!)
-        })
-      )
-      .subscribe((res) => {
-        this.data = res;
-        this.isLoading = false;
-        this.cdr.markForCheck();
-      })
+  constructor(private demoService: DemoService) {
+    this.data = computed<Promise<any>>(() => {
+      this.isLoading = true;
+      return this.demoService
+        .loadDataByCategory(this.selectedCategory()!)
+        .finally(() => this.isLoading = false);
+    });
   }
 }

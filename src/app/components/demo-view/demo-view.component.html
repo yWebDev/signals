@@ -2,18 +2,19 @@
 <div class="header">
   <div class="category-selector-wrapper">
     <app-category-selector
+      [category]="selectedCategory"
       (categoriesLoad)="categories = $event"></app-category-selector>
   </div>
-  <div class="category-title-wrapper"><h2>{{ selectedCategory }}</h2></div>
+  <div class="category-title-wrapper"><h2>{{ selectedCategory() }}</h2></div>
 </div>
 <div class="content">
   <div>
     <div class="category-item"
-         [ngClass]="{ 'selected' : category === selectedCategory }"
+         [ngClass]="{ 'selected' : category === selectedCategory()! }"
          *ngFor="let category of categories">
       <h3>{{ category }}</h3>
       <p>Content for {{ category }}</p>
     </div>
   </div>
-  <div>{{ !isLoading ? data.data : 'Loading...' }}</div>
+  <div>{{ !isLoading ? (data() | async).data : 'Loading...' }}</div>
 </div>

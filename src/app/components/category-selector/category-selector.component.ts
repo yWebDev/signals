@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, WritableSignal } from '@angular/core';
 import { CategoryService } from '../../services/category.service';
 import { DemoService } from '../../services/demo.service';
 
@@ -8,40 +8,35 @@ import { DemoService } from '../../services/demo.service';
   styleUrls: ['./category-selector.component.scss']
 })
 export class CategorySelectorComponent implements OnInit {
-  @Output() categoryChange = new EventEmitter<string>();
+  @Input() category!: WritableSignal<string | null>;
   @Output() categoriesLoad = new EventEmitter<string[]>();
 
-  selectedCategory?: string;
   selectedIndex = 0;
   categories?: string[];
 
-  constructor(private demoService: DemoService, public categoryService: CategoryService) {
-    this.categoryService.category$
-      .asObservable()
-      .subscribe(category => this.selectedCategory = category!);
-  }
+  constructor(private demoService: DemoService) {}
 
   ngOnInit() {
     this.demoService.loadCategories()
       .then(res => {
         this.categories = res;
-        this.categoriesLoad.emit(this.categories)
-        this.categoryService.category$.next(this.categories![0]);
+        this.categoriesLoad.emit(this.categories);
+        this.category.set(this.categories![0]);
       });
   }
 
   onPrev(): void {
     this.selectedIndex -= 1;
-    this.categoryService.category$.next(this.categories![this.selectedIndex]);
+    this.category.set(this.categories![this.selectedIndex]);
   }
 
   onNext(): void {
     this.selectedIndex += 1;
-    this.categoryService.category$.next(this.categories![this.selectedIndex]);
+    this.category.set(this.categories![this.selectedIndex]);
   }
 
   onCategoryChange(category: string): void {
     this.selectedIndex = this.categories?.indexOf(category)!;
-    this.categoryService.category$.next(category);
+    this.category.set(this.categories![this.selectedIndex]);
   }
 }
