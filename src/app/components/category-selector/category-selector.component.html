@@ -3,6 +3,6 @@
   class="select"
   bindValue="value"
   [items]="categories!"
-  [(ngModel)]="selectedCategory"
-  (ngModelChange)="categoryChange.emit(selectedCategory)"></ng-select>
-<button [disabled]="selectedIndex === categories!.length - 1" (click)="onNext()">Next -></button>
+  [ngModel]="selectedCategory"
+  (ngModelChange)="onCategoryChange($event)"></ng-select>
+<button [disabled]="categories && selectedIndex === categories!.length - 1" (click)="onNext()">Next -></button>

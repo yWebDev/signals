@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { switchMap, tap } from 'rxjs';
+import { CategoryService } from '../../services/category.service';
 import { DemoService } from '../../services/demo.service';
 
 @Component({
@@ -13,15 +15,24 @@ export class DemoViewComponent {
   data: any;
   isLoading = false;
 
-  constructor(private cdr: ChangeDetectorRef, private demoService: DemoService) {
+  constructor(private cdr: ChangeDetectorRef, private demoService: DemoService, private categoryService: CategoryService) {
+    this.categoryService.category$
+      .asObservable()
+      .pipe(
+        tap(() => this.isLoading = true),
+        switchMap((category: string | null) => {
+          this.selectedCategory = category!;
+          return this.demoService.loadDataByCategory(category!)
+        })
+      )
+      .subscribe((res) => {
+        this.data = res;
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      })
   }
 
-  onCategoryChange(category: string): void {
-    this.selectedCategory = category;
-    this.isLoading = true;
-    this.demoService.loadDataByCategory(this.selectedCategory)
-      .then(res => this.data = res)
-      .then(() => this.isLoading = false)
-      .then(() => this.cdr.markForCheck());
+  onCategoryItemClick(category: string): void {
+    this.categoryService.category$.next(category);
   }
 }
