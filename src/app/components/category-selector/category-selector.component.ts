@@ -1,4 +1,13 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, WritableSignal } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component, effect,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  signal,
+  WritableSignal
+} from '@angular/core';
 import { CategoryService } from '../../services/category.service';
 import { DemoService } from '../../services/demo.service';
 
@@ -11,10 +20,15 @@ export class CategorySelectorComponent implements OnInit {
   @Input() category!: WritableSignal<string | null>;
   @Output() categoriesLoad = new EventEmitter<string[]>();
 
-  selectedIndex = 0;
+  selectedIndex = signal(0);
   categories?: string[];
 
-  constructor(private demoService: DemoService) {}
+  constructor(private demoService: DemoService) {
+    effect(() => {
+      const selectedIndex = this.selectedIndex();
+      this.category?.set(this.categories![selectedIndex]);
+    }, { allowSignalWrites: true });
+  }
 
   ngOnInit() {
     this.demoService.loadCategories()
@@ -26,17 +40,14 @@ export class CategorySelectorComponent implements OnInit {
   }
 
   onPrev(): void {
-    this.selectedIndex -= 1;
-    this.category.set(this.categories![this.selectedIndex]);
+    this.selectedIndex.update(selectedIndex => selectedIndex - 1);
   }
 
   onNext(): void {
-    this.selectedIndex += 1;
-    this.category.set(this.categories![this.selectedIndex]);
+    this.selectedIndex.update(selectedIndex => selectedIndex + 1);
   }
 
   onCategoryChange(category: string): void {
-    this.selectedIndex = this.categories?.indexOf(category)!;
-    this.category.set(this.categories![this.selectedIndex]);
+    this.selectedIndex.set(this.categories?.indexOf(category)!);
   }
 }

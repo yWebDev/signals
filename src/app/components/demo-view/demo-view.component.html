@@ -16,5 +16,5 @@
       <p>Content for {{ category }}</p>
     </div>
   </div>
-  <div>{{ !isLoading ? (data() | async).data : 'Loading...' }}</div>
+  <div>{{ !isLoading ? (data() | async)?.data : 'Loading...' }}</div>
 </div>

@@ -1,8 +1,8 @@
-<button [disabled]="selectedIndex === 0" (click)="onPrev()"><- Prev</button>
+<button [disabled]="selectedIndex() === 0" (click)="onPrev()"><- Prev</button>
 <ng-select
   class="select"
   bindValue="value"
   [items]="categories!"
   [ngModel]="category()"
   (ngModelChange)="onCategoryChange($event)"></ng-select>
-<button [disabled]="categories!.length && selectedIndex === categories!.length - 1" (click)="onNext()">Next -></button>
+<button [disabled]="categories?.length && selectedIndex() === categories!.length - 1" (click)="onNext()">Next -></button>
