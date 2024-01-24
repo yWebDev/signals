@@ -1,8 +1,8 @@
 import {
   ChangeDetectorRef,
   Component, effect,
-  EventEmitter, Injector,
-  Input,
+  EventEmitter, Injector, input,
+  Input, InputSignal,
   OnInit,
   Output,
   signal,
@@ -17,10 +17,10 @@ import { DemoService } from '../../services/demo.service';
   styleUrls: ['./category-selector.component.scss']
 })
 export class CategorySelectorComponent implements OnInit {
-  @Input() category!: WritableSignal<string | null>;
   @Output() categoriesLoad = new EventEmitter<string[]>();
 
   selectedIndex = signal(0);
+  category: InputSignal<string> = input.required<string>();
 
   categories?: string[];
 
@@ -32,7 +32,7 @@ export class CategorySelectorComponent implements OnInit {
   constructor(private demoService: DemoService, private injector: Injector) {
     effect(() => {
       const selectedIndex = this.selectedIndex();
-      this.category?.set(this.categories![selectedIndex]);
+      // this.category?.set(this.categories![selectedIndex]);
     }, { allowSignalWrites: true });
   }
 
@@ -41,7 +41,7 @@ export class CategorySelectorComponent implements OnInit {
       .then(res => {
         this.categories = res;
         this.categoriesLoad.emit(this.categories);
-        this.category.set(this.categories![0]);
+        // this.category.set(this.categories![0]);
         this.initCategoryEffect();
       });
   }
